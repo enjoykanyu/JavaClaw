@@ -116,7 +116,7 @@ EinoAI/
 brew install ollama
 
 # 拉取推荐模型
-ollama pull qwen2.5:7b
+ollama pull qwen3:1.7b
 
 # 启动服务
 ollama serve
@@ -132,7 +132,7 @@ spring:
     ollama:
       base-url: http://localhost:11434
       chat:
-        model: qwen2.5:7b
+        model: qwen3:1.7b
 
 milvus:
   host: localhost
