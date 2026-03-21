@@ -6,6 +6,7 @@ import com.kanyu.companion.agent.MemoryAgent;
 import com.kanyu.companion.model.CompanionProfile;
 import com.kanyu.companion.service.CompanionService;
 import com.kanyu.companion.service.MemoryService;
+import com.kanyu.companion.service.SkillManager;
 import com.kanyu.graph.state.GraphState;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class CompanionController {
     private final ChatModel chatModel;
     private final CompanionService companionService;
     private final MemoryService memoryService;
+    private final SkillManager skillManager;
     
     @PostMapping("/profile")
     public ResponseEntity<ProfileResponse> createProfile(@RequestBody ProfileRequest request) {
@@ -73,25 +75,38 @@ public class CompanionController {
     @PostMapping("/chat")
     public ResponseEntity<ChatResponse> chat(@RequestBody ChatRequest request) {
         log.info("Chat request from user: {}", request.getUserId());
-        
+
         try {
             GraphState state = new GraphState();
             state.setUserInput(request.getMessage());
             state.put("userId", request.getUserId());
-            
+
+            // 1. 情感分析
             EmotionAgent emotionAgent = new EmotionAgent(chatModel);
             state = emotionAgent.execute(state);
-            
-            CompanionAgent companionAgent = new CompanionAgent(
-                chatModel,
-                companionService,
-                memoryService
-            );
-            state = companionAgent.execute(state);
+
+            // 2. 技能路由 - 检查是否有技能可以处理
+            state = skillManager.executeSkills(state);
+
+            // 3. 如果没有技能处理，则使用 CompanionAgent
+            if (state.get("skill_response") == null) {
+                CompanionAgent companionAgent = new CompanionAgent(
+                    chatModel,
+                    companionService,
+                    memoryService
+                );
+                state = companionAgent.execute(state);
+            }
+
+            // 4. 记忆处理
+            MemoryAgent memoryAgent = new MemoryAgent(chatModel, memoryService);
+            state = memoryAgent.execute(state);
 
             ChatResponse response = new ChatResponse();
             response.setSuccess(true);
-            response.setMessage(state.get("companion_response"));
+            response.setMessage(state.get("skill_response") != null
+                ? state.get("skill_response")
+                : state.get("companion_response"));
             response.setAgentName(state.get("agent_name"));
 
             @SuppressWarnings("unchecked")
@@ -102,7 +117,7 @@ public class CompanionController {
             }
 
             return ResponseEntity.ok(response);
-            
+
         } catch (Exception e) {
             log.error("Chat failed", e);
             ChatResponse response = new ChatResponse();
@@ -115,29 +130,49 @@ public class CompanionController {
     @PostMapping("/chat/full")
     public ResponseEntity<ChatResponse> chatWithMemory(@RequestBody ChatRequest request) {
         log.info("Full chat request from user: {}", request.getUserId());
-        
+
         try {
             GraphState state = new GraphState();
             state.setUserInput(request.getMessage());
             state.put("userId", request.getUserId());
-            
+
+            // 1. 情感分析
             EmotionAgent emotionAgent = new EmotionAgent(chatModel);
             state = emotionAgent.execute(state);
-            
-            CompanionAgent companionAgent = new CompanionAgent(
-                chatModel,
-                companionService,
-                memoryService
-            );
-            state = companionAgent.execute(state);
+
+            // 2. 技能路由 - 检查是否有技能可以处理
+            state = skillManager.executeSkills(state);
+
+            // 3. 如果没有技能处理，则使用 CompanionAgent
+            if (state.get("skill_response") == null) {
+                CompanionAgent companionAgent = new CompanionAgent(
+                    chatModel,
+                    companionService,
+                    memoryService
+                );
+                state = companionAgent.execute(state);
+            }
+
+            // 4. 记忆处理
+            MemoryAgent memoryAgent = new MemoryAgent(chatModel, memoryService);
+            state = memoryAgent.execute(state);
 
             ChatResponse response = new ChatResponse();
             response.setSuccess(true);
-            response.setMessage(state.get("companion_response"));
+            response.setMessage(state.get("skill_response") != null
+                ? state.get("skill_response")
+                : state.get("companion_response"));
             response.setAgentName(state.get("agent_name"));
 
+            @SuppressWarnings("unchecked")
+            Map<String, Object> emotion = (Map<String, Object>) state.get("emotion_analysis");
+            if (emotion != null) {
+                response.setEmotion((String) emotion.get("primary_emotion"));
+                response.setNeedsSupport((Boolean) emotion.get("needs_support"));
+            }
+
             return ResponseEntity.ok(response);
-            
+
         } catch (Exception e) {
             log.error("Full chat failed", e);
             ChatResponse response = new ChatResponse();
