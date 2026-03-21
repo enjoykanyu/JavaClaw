@@ -5,6 +5,7 @@ import com.kanyu.companion.agent.EmotionAgent;
 import com.kanyu.companion.agent.MemoryAgent;
 import com.kanyu.companion.model.CompanionProfile;
 import com.kanyu.companion.service.CompanionService;
+import com.kanyu.companion.service.MemoryService;
 import com.kanyu.graph.state.GraphState;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,10 @@ import java.util.Map;
 @RequestMapping("/api/companion")
 @RequiredArgsConstructor
 public class CompanionController {
-    
+
     private final ChatModel chatModel;
     private final CompanionService companionService;
+    private final MemoryService memoryService;
     
     @PostMapping("/profile")
     public ResponseEntity<ProfileResponse> createProfile(@RequestBody ProfileRequest request) {
@@ -81,24 +83,24 @@ public class CompanionController {
             state = emotionAgent.execute(state);
             
             CompanionAgent companionAgent = new CompanionAgent(
-                chatModel, 
+                chatModel,
                 companionService,
-                null
+                memoryService
             );
             state = companionAgent.execute(state);
-            
+
             ChatResponse response = new ChatResponse();
             response.setSuccess(true);
             response.setMessage(state.get("companion_response"));
             response.setAgentName(state.get("agent_name"));
-            
+
             @SuppressWarnings("unchecked")
             Map<String, Object> emotion = (Map<String, Object>) state.get("emotion_analysis");
             if (emotion != null) {
                 response.setEmotion((String) emotion.get("primary_emotion"));
                 response.setNeedsSupport((Boolean) emotion.get("needs_support"));
             }
-            
+
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
@@ -125,15 +127,15 @@ public class CompanionController {
             CompanionAgent companionAgent = new CompanionAgent(
                 chatModel,
                 companionService,
-                null
+                memoryService
             );
             state = companionAgent.execute(state);
-            
+
             ChatResponse response = new ChatResponse();
             response.setSuccess(true);
             response.setMessage(state.get("companion_response"));
             response.setAgentName(state.get("agent_name"));
-            
+
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {

@@ -115,7 +115,7 @@ public class RagController {
     
     private DocumentInfo toDocumentInfo(Document doc) {
         DocumentInfo info = new DocumentInfo();
-        info.setContent(doc.getText());
+        info.setContent(doc.getContent());
         info.setMetadata(doc.getMetadata());
         return info;
     }

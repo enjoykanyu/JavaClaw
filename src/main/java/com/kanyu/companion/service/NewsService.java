@@ -78,7 +78,7 @@ public class NewsService {
             ChatResponse response = chatModel.call(prompt);
             
             if (response != null && response.getResult() != null) {
-                return response.getResult().getOutput().getText();
+                return response.getResult().getOutput().getContent();
             }
             
         } catch (Exception e) {

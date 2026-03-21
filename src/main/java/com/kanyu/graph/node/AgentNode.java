@@ -78,7 +78,7 @@ public class AgentNode implements Node {
             String responseText = "";
             if (response != null && response.getResult() != null) {
                 AssistantMessage assistantMessage = response.getResult().getOutput();
-                responseText = assistantMessage.getText();
+                responseText = assistantMessage.getContent();
 
                 // 添加到消息历史
                 state.addMessage(new UserMessage(userInput));

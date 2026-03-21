@@ -22,10 +22,23 @@
 
     <properties>
         <java.version>17</java.version>
-        <spring-ai-alibaba.version>1.1.2.0</spring-ai-alibaba.version>
+        <spring-ai-alibaba.version>1.0.0-M3.1</spring-ai-alibaba.version>
+        <spring-ai.version>1.0.0-M3</spring-ai.version>
         <milvus.version>2.3.4</milvus.version>
         <pdfbox.version>3.0.0</pdfbox.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>${spring-ai.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- Spring Boot Starter -->
@@ -47,11 +60,14 @@
             <version>${spring-ai-alibaba.version}</version>
         </dependency>
 
-        <!-- Spring AI Alibaba Ollama Support -->
+        <!-- Spring AI Ollama Support -->
         <dependency>
-            <groupId>com.alibaba.cloud.ai</groupId>
-            <artifactId>spring-ai-alibaba-ollama-starter</artifactId>
-            <version>${spring-ai-alibaba.version}</version>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-ollama</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-ollama-spring-boot-starter</artifactId>
         </dependency>
 
         <!-- Milvus Vector Store -->

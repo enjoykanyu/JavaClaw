@@ -135,13 +135,13 @@ public class PdfService {
             ChatResponse response = chatModel.call(prompt);
             
             if (response != null && response.getResult() != null) {
-                return response.getResult().getOutput().getText();
+                return response.getResult().getOutput().getContent();
             }
-            
+
         } catch (Exception e) {
             log.error("Failed to generate PDF summary", e);
         }
-        
+
         return "无法生成摘要";
     }
     
@@ -170,9 +170,9 @@ public class PdfService {
             ChatResponse response = chatModel.call(prompt);
             
             if (response != null && response.getResult() != null) {
-                return response.getResult().getOutput().getText();
+                return response.getResult().getOutput().getContent();
             }
-            
+
         } catch (Exception e) {
             log.error("Failed to answer PDF question", e);
         }

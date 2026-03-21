@@ -63,7 +63,7 @@ public class RagAgentNode {
             
             String responseText = "";
             if (response != null && response.getResult() != null) {
-                responseText = response.getResult().getOutput().getText();
+                responseText = response.getResult().getOutput().getContent();
                 
                 state.addMessage(new UserMessage(userInput));
                 state.addMessage(new AssistantMessage(responseText));

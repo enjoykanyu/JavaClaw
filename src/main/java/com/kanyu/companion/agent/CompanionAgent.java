@@ -68,7 +68,7 @@ public class CompanionAgent {
             String responseText = "";
             if (response != null && response.getResult() != null) {
                 AssistantMessage assistantMessage = response.getResult().getOutput();
-                responseText = assistantMessage.getText();
+                responseText = assistantMessage.getContent();
                 
                 state.addMessage(new UserMessage(userInput));
                 state.addMessage(assistantMessage);

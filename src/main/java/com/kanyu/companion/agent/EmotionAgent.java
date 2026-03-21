@@ -59,7 +59,7 @@ public class EmotionAgent {
             ChatResponse response = chatModel.call(prompt);
             
             if (response != null && response.getResult() != null) {
-                String responseText = response.getResult().getOutput().getText();
+                String responseText = response.getResult().getOutput().getContent();
                 
                 Map<String, Object> emotionResult = parseEmotionResult(responseText);
                 state.put("emotion_analysis", emotionResult);

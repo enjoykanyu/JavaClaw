@@ -67,7 +67,7 @@ public class RagService {
                 context.append("来源: ").append(doc.getMetadata().get("source"));
             }
             context.append("\n");
-            context.append(doc.getText()).append("\n\n");
+            context.append(doc.getContent()).append("\n\n");
         }
 
         return context.toString();

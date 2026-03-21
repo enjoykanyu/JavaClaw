@@ -109,7 +109,7 @@ public class JokeSkill implements Skill {
             
             String responseText = "";
             if (response != null && response.getResult() != null) {
-                responseText = response.getResult().getOutput().getText();
+                responseText = response.getResult().getOutput().getContent();
             }
             
             state.put("skill_response", responseText);

@@ -91,13 +91,13 @@ public class GreetingService {
             ChatResponse response = chatModel.call(prompt);
             
             if (response != null && response.getResult() != null) {
-                return response.getResult().getOutput().getText();
+                return response.getResult().getOutput().getContent();
             }
-            
+
         } catch (Exception e) {
             log.error("Failed to generate greeting", e);
         }
-        
+
         return template;
     }
     
@@ -143,13 +143,13 @@ public class GreetingService {
             ChatResponse response = chatModel.call(prompt);
             
             if (response != null && response.getResult() != null) {
-                return response.getResult().getOutput().getText();
+                return response.getResult().getOutput().getContent();
             }
-            
+
         } catch (Exception e) {
             log.error("Failed to generate weather greeting", e);
         }
-        
+
         return "今天天气不错，注意保暖哦！";
     }
     
@@ -174,13 +174,13 @@ public class GreetingService {
             ChatResponse response = chatModel.call(prompt);
             
             if (response != null && response.getResult() != null) {
-                return response.getResult().getOutput().getText();
+                return response.getResult().getOutput().getContent();
             }
-            
+
         } catch (Exception e) {
             log.error("Failed to generate festival greeting", e);
         }
-        
+
         return String.format("%s快乐！🎉", festival);
     }
     
