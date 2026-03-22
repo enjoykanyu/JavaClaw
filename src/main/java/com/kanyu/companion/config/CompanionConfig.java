@@ -6,6 +6,7 @@ import com.kanyu.companion.agent.MemoryAgent;
 import com.kanyu.companion.agent.McpToolNode;
 import com.kanyu.companion.agent.RagAgentNode;
 import com.kanyu.companion.mcp.McpToolRegistry;
+import com.kanyu.companion.mcp.tools.GNewsMcpTool;
 import com.kanyu.companion.service.CompanionService;
 import com.kanyu.companion.service.MemoryService;
 import com.kanyu.companion.service.RagService;
@@ -15,6 +16,7 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
@@ -50,11 +52,19 @@ public class CompanionConfig {
     
     @Bean
     public McpToolRegistry mcpToolRegistry() {
-        return new McpToolRegistry();
+        McpToolRegistry registry = new McpToolRegistry();
+        // 手动注册新闻工具
+        registry.registerTool(gNewsMcpTool());
+        return registry;
     }
-    
+
+    @Bean
+    public GNewsMcpTool gNewsMcpTool() {
+        return new GNewsMcpTool();
+    }
+
     @Autowired
-    public void registerSkills(SkillManager skillManager, List<Skill> skills) {
+    public void registerSkills(SkillManager skillManager, @Lazy List<Skill> skills) {
         skillManager.registerSkills(skills);
     }
 }
