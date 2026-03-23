@@ -59,6 +59,16 @@ companion:
     enabled: true
     push-cron: "0 0 * * * ?"
 
+# 新闻 API 配置官网：https://gnews.io/
+gnews:
+  api:
+    key: ${GNEWS_API_KEY:}  # 从 https://gnews.io/ 获取免费 API Key
+    url: https://gnews.io/api/v4
+    timeout: 10000
+  cache:
+    ttl: 300  # 缓存5分钟（秒）
+    enabled: true
+
 logging:
   level:
     com.alibaba.cloud.ai: DEBUG
