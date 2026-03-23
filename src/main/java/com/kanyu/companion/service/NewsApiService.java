@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 新闻 API 服务
- * 带缓存和容错机制的企业级实现
+ * 带缓存和容错机制
  */
 @Slf4j
 @Service

@@ -58,7 +58,19 @@ public class GraphState {
     public <T> T get(String key) {
         return (T) this.data.get(key);
     }
-    
+
+    /**
+     * 获取值，如果不存在返回默认值
+     * @param key 键
+     * @param defaultValue 默认值
+     * @return 值或默认值
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getOrDefault(String key, T defaultValue) {
+        Object value = this.data.get(key);
+        return value != null ? (T) value : defaultValue;
+    }
+
     public void addMessage(Message message) {
         this.messages.add(message);
     }
